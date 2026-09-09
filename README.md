@@ -16,7 +16,14 @@ server, not in a release you have to wait for.
 
 ## Install
 
-Not yet published. Once it is, it installs as a custom repository in HACS.
+Add this repository as a **custom repository** in HACS (category: Integration), then install
+it and restart Home Assistant:
+
+```
+HACS → ⋮ → Custom repositories
+Repository: https://github.com/informatJonas/fluvigil-homeassistant
+Category:   Integration
+```
 
 ## Setup
 
