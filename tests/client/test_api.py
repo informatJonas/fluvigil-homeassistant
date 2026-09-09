@@ -6,9 +6,22 @@ fails — and a stub that reimplements those semantics can agree with the client
 are wrong.
 """
 
+import sys
+import types
+from pathlib import Path
+
 import aiohttp
 import pytest
 from aiohttp import web
+
+# Registered here rather than in conftest: only these tests want the client without Home
+# Assistant, and aliasing the package globally would shadow the real integration in the
+# config-flow tests.
+_INTEGRATION_ROOT = Path(__file__).resolve().parents[2] / "custom_components" / "fluvigil"
+if "fluvigil" not in sys.modules:
+    _package = types.ModuleType("fluvigil")
+    _package.__path__ = [str(_INTEGRATION_ROOT)]
+    sys.modules["fluvigil"] = _package
 
 from fluvigil.api import (
     FluvigilAuthError,
@@ -18,6 +31,7 @@ from fluvigil.api import (
 )
 
 STATION_ID = "pegelonline:abc"
+
 
 STATE_PAYLOAD = {
     "stationId": STATION_ID,
