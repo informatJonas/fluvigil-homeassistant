@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Fluvigil",
+        "description": "Create an API key in your Fluvigil account under Account → API keys.",
+        "data": { "api_key": "API key", "url": "Server URL" }
+      },
+      "station": {
+        "title": "Find a gauge",
+        "description": "Search by gauge or water body, e.g. \"Köln\" or \"Rhein\".",
+        "data": { "search": "Search" }
+      },
+      "pick": {
+        "title": "Pick a gauge",
+        "data": { "station_id": "Gauge" }
+      }
+    },
+    "error": {
+      "invalid_auth": "That API key was not accepted. Check it in your Fluvigil account under Account → API keys.",
+      "cannot_connect": "Fluvigil could not be reached. Check the server URL and your connection.",
+      "rate_limited": "The hourly request budget of your tier is used up. Try again later.",
+      "no_stations_found": "No gauge matched that search."
+    },
+    "abort": {
+      "already_configured": "That gauge is already set up."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "water_level": { "name": "Water level" }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Mit Fluvigil verbinden",
+        "description": "API-Key im Fluvigil-Konto unter Konto → API-Keys anlegen.",
+        "data": { "api_key": "API-Key", "url": "Server-Adresse" }
+      },
+      "station": {
+        "title": "Pegel suchen",
+        "description": "Nach Pegel oder Gewässer suchen, z. B. „Köln“ oder „Rhein“.",
+        "data": { "search": "Suche" }
+      },
+      "pick": {
+        "title": "Pegel auswählen",
+        "data": { "station_id": "Pegel" }
+      }
+    },
+    "error": {
+      "invalid_auth": "Dieser API-Key wurde nicht akzeptiert. Prüfe ihn im Fluvigil-Konto unter Konto → API-Keys.",
+      "cannot_connect": "Fluvigil ist nicht erreichbar. Prüfe Server-Adresse und Verbindung.",
+      "rate_limited": "Das Stundenbudget deines Tarifs ist aufgebraucht. Versuch es später erneut.",
+      "no_stations_found": "Zu dieser Suche wurde kein Pegel gefunden."
+    },
+    "abort": {
+      "already_configured": "Dieser Pegel ist bereits eingerichtet."
+    }
+  },
+  "entity": {
+    "sensor": {
+      "water_level": { "name": "Wasserstand" }
+    }
+  }
+}
