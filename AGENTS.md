@@ -46,13 +46,27 @@ or the limits; the numbers there are argued, not assumed.
 ## Testing
 
 ```bash
-python3 -m venv .venv && .venv/bin/pip install aiohttp async_timeout pytest pytest-asyncio
-.venv/bin/python -m pytest -q
+python3 -m venv .venv
+.venv/bin/pip install aiohttp async_timeout pytest pytest-asyncio pytest-homeassistant-custom-component
+./run-tests.sh
 ```
 
-The coordinator, config flow and sensor are deliberately uncovered: they are thin wrappers
-over Home Assistant machinery, and testing them means installing the framework. Worth doing
-when this is submitted upstream; not worth it for a first gauge.
+**Two runs, and that is not an accident.** The Home Assistant test plugin blocks sockets and
+enforces its own cleanup across everything in its process, while `tests/client` exists
+precisely to talk to a real local HTTP server. So the client half runs with plugin
+autoloading off (`PYTEST_DISABLE_PLUGIN_AUTOLOAD=1`, only `pytest_asyncio.plugin` enabled)
+and the Home Assistant half runs normally. Merging them into one command means giving up one
+of the two, and both earn their keep:
+
+- `tests/client` — the client against a real aiohttp server: status codes, malformed bodies,
+  a connection that fails. A mock that reimplements HTTP semantics can agree with the client
+  while both are wrong.
+- `tests/homeassistant` — the config flow and the entity inside a real Home Assistant
+  instance. This is where the acceptance criteria live: a bad key refused in the dialog, a
+  sensor that afterwards carries value, unit and measurement time.
+
+The Home Assistant half copies the integration into the test instance's config directory,
+because discovery reads that directory and not the project.
 
 ## Not in scope yet
 
