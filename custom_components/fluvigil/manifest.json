@@ -1,7 +1,9 @@
 {
   "domain": "fluvigil",
   "name": "Fluvigil",
-  "codeowners": [],
+  "codeowners": [
+    "@informatJonas"
+  ],
   "config_flow": true,
   "documentation": "https://github.com/informatJonas/fluvigil-homeassistant",
   "integration_type": "service",
