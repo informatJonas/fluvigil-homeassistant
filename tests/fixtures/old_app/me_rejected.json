@@ -1,0 +1,7 @@
+{
+  "error": true,
+  "url": "https://fluvigil.de/api/v1/me",
+  "statusCode": 401,
+  "statusMessage": "Unknown or revoked API key",
+  "message": "Unknown or revoked API key"
+}

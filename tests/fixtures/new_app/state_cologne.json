@@ -1,0 +1,53 @@
+{
+  "stationId": "fp_7K3M9Q2XVD",
+  "name": "Köln",
+  "water": "Rhein",
+  "sourceNotice": {
+    "id": "pegelonline",
+    "form": "short-allowed",
+    "permissionBasis": "licence",
+    "licence": {
+      "name": "Datenlizenz Deutschland – Zero – Version 2.0",
+      "url": "https://www.govdata.de/dl-de/zero-2-0"
+    },
+    "sourceName": "PEGELONLINE",
+    "sourceUrl": "https://www.pegelonline.wsv.de",
+    "rightsHolder": "Wasserstraßen- und Schifffahrtsverwaltung des Bundes (WSV)",
+    "fetchedAt": "2026-11-26T06:45:02.260Z",
+    "stampedAt": null,
+    "stationLink": null,
+    "text": "Datenherkunft: PEGELONLINE (https://www.pegelonline.wsv.de)\nRechteinhaber: Wasserstraßen- und Schifffahrtsverwaltung des Bundes (WSV)\nLizenz: Datenlizenz Deutschland – Zero – Version 2.0 (https://www.govdata.de/dl-de/zero-2-0)\nAbruf: 26.11.2026, 07:45 MEZ",
+    "textShort": "Datenherkunft: PEGELONLINE · Wasserstraßen- und Schifffahrtsverwaltung des Bundes (WSV) · Datenlizenz Deutschland – Zero – Version 2.0",
+    "parts": [
+      {
+        "id": "pegelonline",
+        "form": "short-allowed",
+        "permissionBasis": "licence",
+        "licence": {
+          "name": "Datenlizenz Deutschland – Zero – Version 2.0",
+          "url": "https://www.govdata.de/dl-de/zero-2-0"
+        },
+        "sourceName": "PEGELONLINE",
+        "sourceUrl": "https://www.pegelonline.wsv.de",
+        "rightsHolder": "Wasserstraßen- und Schifffahrtsverwaltung des Bundes (WSV)",
+        "fetchedAt": "2026-11-26T06:45:02.260Z",
+        "stampedAt": null,
+        "stationLink": null,
+        "text": "Datenherkunft: PEGELONLINE (https://www.pegelonline.wsv.de)\nRechteinhaber: Wasserstraßen- und Schifffahrtsverwaltung des Bundes (WSV)\nLizenz: Datenlizenz Deutschland – Zero – Version 2.0 (https://www.govdata.de/dl-de/zero-2-0)\nAbruf: 26.11.2026, 07:45 MEZ",
+        "textShort": "Datenherkunft: PEGELONLINE · Wasserstraßen- und Schifffahrtsverwaltung des Bundes (WSV) · Datenlizenz Deutschland – Zero – Version 2.0"
+      }
+    ],
+    "sourceLine": "Datenherkunft: PEGELONLINE (https://www.pegelonline.wsv.de)",
+    "rawData": null,
+    "disclaimer": null,
+    "noOfficialWarning": null,
+    "termsPath": "/terms"
+  },
+  "valueCentimeters": 325,
+  "measuredAt": "2026-11-26T06:30:00.000Z",
+  "severity": "normal",
+  "headline": "Im Bereich des Mittelwassers",
+  "lhpClass": null,
+  "lhpClassName": null,
+  "isFlood": false
+}

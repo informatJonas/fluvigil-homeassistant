@@ -13,6 +13,7 @@ from pathlib import Path
 import aiohttp
 import pytest
 from aiohttp import web
+from answers import answer
 
 # Registered here rather than in conftest: only these tests want the client without Home
 # Assistant, and aliasing the package globally would shadow the real integration in the
@@ -27,6 +28,7 @@ from fluvigil.api import (
     FluvigilAuthError,
     FluvigilClient,
     FluvigilError,
+    FluvigilNoValueError,
     FluvigilRateLimitError,
 )
 
@@ -84,10 +86,11 @@ async def test_verify_key_returns_the_tier():
 
 
 @pytest.mark.asyncio
-async def test_verify_key_rejects_an_unknown_key():
+@pytest.mark.parametrize("generation", ["old_app", "new_app"])
+async def test_verify_key_rejects_an_unknown_key(generation):
     # The setup dialog depends on this. Everywhere else on the API an unknown key is ignored
     # and the request proceeds anonymously, which would make a typo look like a working setup.
-    routes = [json_route("/api/v1/me", {"statusMessage": "Unknown"}, status=401)]
+    routes = [json_route("/api/v1/me", answer(f"{generation}/me_rejected"), status=401)]
 
     with pytest.raises(FluvigilAuthError):
         await with_client(routes, lambda client: client.async_verify_key())
@@ -181,3 +184,44 @@ async def test_unexpected_shape_is_an_error_not_a_crash():
 
     with pytest.raises(FluvigilError):
         await with_client(routes, lambda client: client.async_search_stations("Köln"))
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("recorded", "station_id"),
+    [
+        ("old_app/state_mv_not_found", "lhp:MV_04406.0"),
+        ("new_app/state_not_found", "lhp:BY_13321002"),
+    ],
+)
+async def test_a_gauge_the_service_has_no_value_for_is_its_own_error(recorded, station_id):
+    # Not an outage: telling the user to check their connection would send them the wrong way.
+    path = f"/api/v1/stations/{station_id}/state"
+    routes = [json_route(path, answer(recorded), status=404)]
+
+    with pytest.raises(FluvigilNoValueError):
+        await with_client(routes, lambda client: client.async_get_state(station_id))
+
+
+@pytest.mark.asyncio
+async def test_an_old_id_is_answered_under_the_public_id():
+    recorded = answer("new_app/state_mv")
+    routes = [json_route("/api/v1/stations/lhp:MV_04406.0/state", recorded)]
+
+    state = await with_client(routes, lambda client: client.async_get_state("lhp:MV_04406.0"))
+
+    assert state.station_id == recorded["stationId"]
+    assert state.value_centimeters == 118
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("generation", "legacy_id"),
+    [("old_app", None), ("new_app", "pegelonline:a6ee8177-107b-47dd-bcfd-30960ccc6e9c")],
+)
+async def test_search_keeps_the_old_id_the_service_names_beside_a_public_one(generation, legacy_id):
+    routes = [json_route("/api/v1/stations", answer(f"{generation}/search_cologne"))]
+
+    stations = await with_client(routes, lambda client: client.async_search_stations("Köln"))
+
+    assert stations[0].legacy_id == legacy_id

@@ -21,7 +21,11 @@ sources into one dataset. Two endpoints matter here:
 - `GET /api/v1/me` — confirms an API key, returns tier and limits. The **only** route that
   rejects a bad key; everywhere else an unknown key is ignored and the request proceeds
   anonymously on free-tier limits, which is exactly how a typo becomes invisible.
-- `GET /api/v1/stations/{id}/state` — 266 bytes: value, measurement time, severity, headline.
+- `GET /api/v1/stations/{id}/state` — compact: value, measurement time, severity, headline.
+  `404` means the service delivers nothing for this gauge. It never answers `401` for a revoked
+  key, which is why the coordinator asks `/me` as well (at start, then hourly).
+
+Answer shapes of the running and the next service generation are kept in `tests/fixtures`.
 
 Decisions that constrain this integration — differentiation, station allowance per tier,
 poll interval and why it is not a tiering dimension — are recorded in the service repository

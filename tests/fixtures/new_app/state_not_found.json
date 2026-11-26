@@ -1,0 +1,10 @@
+{
+  "error": true,
+  "url": "https://fluvigil.de/api/v1/stations/lhp:BY_13321002/state",
+  "statusCode": 404,
+  "statusMessage": "Not Found",
+  "message": "Not Found",
+  "data": {
+    "code": "station_not_found"
+  }
+}

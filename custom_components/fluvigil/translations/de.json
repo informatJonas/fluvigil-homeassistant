@@ -14,16 +14,23 @@
       "pick": {
         "title": "Pegel auswählen",
         "data": { "station_id": "Pegel" }
+      },
+      "reauth_confirm": {
+        "title": "API-Key ersetzen",
+        "description": "Fluvigil akzeptiert den API-Key nicht mehr. Lege im Fluvigil-Konto unter Konto → API-Keys einen neuen an. Er ersetzt den alten bei allen Pegeln, die ihn verwendet haben.",
+        "data": { "api_key": "API-Key" }
       }
     },
     "error": {
       "invalid_auth": "Dieser API-Key wurde nicht akzeptiert. Prüfe ihn im Fluvigil-Konto unter Konto → API-Keys.",
       "cannot_connect": "Fluvigil ist nicht erreichbar. Prüfe Server-Adresse und Verbindung.",
       "rate_limited": "Das Stundenbudget deines Tarifs ist aufgebraucht. Versuch es später erneut.",
-      "no_stations_found": "Zu dieser Suche wurde kein Pegel gefunden."
+      "no_stations_found": "Zu dieser Suche wurde kein Pegel gefunden.",
+      "no_value": "Für diesen Pegel liefert Fluvigil derzeit keinen Wert."
     },
     "abort": {
-      "already_configured": "Dieser Pegel ist bereits eingerichtet."
+      "already_configured": "Dieser Pegel ist bereits eingerichtet.",
+      "reauth_successful": "Der API-Key wurde ersetzt."
     }
   },
   "entity": {

@@ -14,16 +14,23 @@
       "pick": {
         "title": "Pick a gauge",
         "data": { "station_id": "Gauge" }
+      },
+      "reauth_confirm": {
+        "title": "Replace the API key",
+        "description": "Fluvigil no longer accepts the API key. Create a new one in your Fluvigil account under Account → API keys. It replaces the old key for every gauge that used it.",
+        "data": { "api_key": "API key" }
       }
     },
     "error": {
       "invalid_auth": "That API key was not accepted. Check it in your Fluvigil account under Account → API keys.",
       "cannot_connect": "Fluvigil could not be reached. Check the server URL and your connection.",
       "rate_limited": "The hourly request budget of your tier is used up. Try again later.",
-      "no_stations_found": "No gauge matched that search."
+      "no_stations_found": "No gauge matched that search.",
+      "no_value": "Fluvigil currently provides no value for this gauge."
     },
     "abort": {
-      "already_configured": "That gauge is already set up."
+      "already_configured": "That gauge is already set up.",
+      "reauth_successful": "The API key was replaced."
     }
   },
   "entity": {

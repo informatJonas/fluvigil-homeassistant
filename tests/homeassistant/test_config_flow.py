@@ -4,88 +4,39 @@ These need the framework, which the API-client tests deliberately avoid — but 
 criteria that matter most live exactly here: a bad key must be refused while the user is
 still looking at the dialog, and afterwards a sensor must exist with a value, a unit and the
 time the gauge was actually read.
-
-HTTP is served by Home Assistant's own request mock rather than a local server, because the
-test environment blocks real sockets on purpose.
 """
 
-import shutil
-from pathlib import Path
-
-import pytest
-from homeassistant.config_entries import SOURCE_USER
+from answers import answer
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
-
-_SOURCE = Path(__file__).resolve().parents[2] / "custom_components"
-
-BASE_URL = "https://fluvigil.test"
-VALID_KEY = "pm_gueltig"
-STATION_ID = "pegelonline:probe"
-
-STATE_PAYLOAD = {
-    "stationId": STATION_ID,
-    "name": "Probe",
-    "water": "Testfluss",
-    "valueCentimeters": 412,
-    "measuredAt": "2026-09-09T15:00:00.000Z",
-    "severity": "normal",
-    "headline": "Im Bereich des Mittelwassers",
-    "isFlood": False,
-}
+from service import (
+    BASE_URL,
+    MV_OLD_ID,
+    MV_PUBLIC_ID,
+    OLD_ID,
+    PUBLIC_ID,
+    gauge_entry,
+    run_flow,
+    serve_key,
+    serve_search,
+    serve_state,
+    set_up,
+)
 
 
-@pytest.fixture(autouse=True)
-def install_integration(hass, enable_custom_integrations):
-    """Puts the integration where Home Assistant looks for custom ones.
-
-    Discovery reads the instance's own config directory, which in a test is a throwaway
-    folder — copying it there is what makes the loader find it at all.
-    """
-    shutil.copytree(
-        _SOURCE, Path(hass.config.config_dir) / "custom_components", dirs_exist_ok=True
-    )
-    hass.data.pop("custom_components", None)
-
-    return enable_custom_integrations
-
-
-def mock_service(mocker: AiohttpClientMocker, *, key_valid: bool = True) -> None:
-    mocker.get(
-        f"{BASE_URL}/api/v1/me",
-        json={"tier": "free", "limits": {}, "organizationId": None} if key_valid else {},
-        status=200 if key_valid else 401,
-    )
-    mocker.get(
-        f"{BASE_URL}/api/v1/stations",
-        json={"stations": [{"id": STATION_ID, "name": "Probe", "water": "Testfluss"}]},
-    )
-    mocker.get(f"{BASE_URL}/api/v1/stations/{STATION_ID}/state", json=STATE_PAYLOAD)
-
-
-async def run_flow(hass: HomeAssistant, api_key: str = VALID_KEY) -> dict:
-    """Walks the dialog to the end and returns the final step."""
-    flow = hass.config_entries.flow
-    result = await flow.async_init("fluvigil", context={"source": SOURCE_USER})
-    result = await flow.async_configure(
-        result["flow_id"], {"api_key": api_key, "url": BASE_URL}
-    )
-
-    if result["type"] is not FlowResultType.FORM or result.get("step_id") != "station":
-        return result
-
-    result = await flow.async_configure(result["flow_id"], {"search": "Probe"})
-
-    return await flow.async_configure(result["flow_id"], {"station_id": STATION_ID})
+def serve_old_app(mocker: AiohttpClientMocker) -> None:
+    serve_key(mocker)
+    serve_search(mocker, answer("old_app/search_cologne"))
+    serve_state(mocker, OLD_ID, "old_app/state_cologne")
 
 
 async def test_bad_key_is_refused_in_the_dialog(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
 ) -> None:
-    mock_service(aioclient_mock, key_valid=False)
+    serve_key(aioclient_mock, status=401)
 
-    result = await run_flow(hass, api_key="pm_falsch")
+    result = await run_flow(hass, OLD_ID, api_key="pm_fake_wrong_key")
 
     # Still on the form, with a message — not accepted and then silently useless.
     assert result["type"] is FlowResultType.FORM
@@ -97,7 +48,7 @@ async def test_unreachable_service_is_reported_as_such(
 ) -> None:
     aioclient_mock.get(f"{BASE_URL}/api/v1/me", exc=TimeoutError())
 
-    result = await run_flow(hass)
+    result = await run_flow(hass, OLD_ID)
 
     assert result["errors"] == {"base": "cannot_connect"}
 
@@ -108,7 +59,7 @@ async def test_rate_limited_key_says_so(
     # Distinct from a bad key on purpose: one is fixed with a new key, the other by waiting.
     aioclient_mock.get(f"{BASE_URL}/api/v1/me", status=429, json={})
 
-    result = await run_flow(hass)
+    result = await run_flow(hass, OLD_ID)
 
     assert result["errors"] == {"base": "rate_limited"}
 
@@ -116,33 +67,110 @@ async def test_rate_limited_key_says_so(
 async def test_setup_produces_a_water_level_sensor(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
 ) -> None:
-    mock_service(aioclient_mock)
+    serve_old_app(aioclient_mock)
 
-    result = await run_flow(hass)
+    result = await run_flow(hass, OLD_ID)
 
     assert result["type"] is FlowResultType.CREATE_ENTRY
-    assert result["title"] == "Probe (Testfluss)"
+    assert result["title"] == "Köln (Rhein)"
 
     await hass.async_block_till_done()
 
-    state = hass.states.get("sensor.probe_testfluss_water_level")
+    state = hass.states.get("sensor.koln_rhein_water_level")
     assert state is not None, [entity.entity_id for entity in hass.states.async_all()]
-    assert state.state == "412"
+    assert state.state == "325"
     assert state.attributes["unit_of_measurement"] == "cm"
     # When the gauge was read, not when we fetched it — only the former says how fresh it is.
-    assert state.attributes["measured_at"] == "2026-09-09T15:00:00+00:00"
+    assert state.attributes["measured_at"] == "2026-11-26T06:30:00+00:00"
     assert state.attributes["headline"] == "Im Bereich des Mittelwassers"
 
 
 async def test_the_same_gauge_cannot_be_added_twice(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
 ) -> None:
-    mock_service(aioclient_mock)
+    serve_old_app(aioclient_mock)
 
-    assert (await run_flow(hass))["type"] is FlowResultType.CREATE_ENTRY
+    assert (await run_flow(hass, OLD_ID))["type"] is FlowResultType.CREATE_ENTRY
     await hass.async_block_till_done()
 
-    second = await run_flow(hass)
+    second = await run_flow(hass, OLD_ID)
 
     assert second["type"] is FlowResultType.ABORT
     assert second["reason"] == "already_configured"
+
+
+async def test_a_gauge_without_a_value_is_named_in_the_dialog(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    serve_key(aioclient_mock)
+    serve_search(aioclient_mock, {"stations": [{"id": MV_OLD_ID, "name": "Beispielpegel MV"}]})
+    serve_state(aioclient_mock, MV_OLD_ID, "old_app/state_mv_not_found", status=404)
+
+    result = await run_flow(hass, MV_OLD_ID)
+
+    # Back at the search, so another gauge can be picked without typing the key again.
+    assert result["type"] is FlowResultType.FORM
+    assert result["step_id"] == "station"
+    assert result["errors"] == {"base": "no_value"}
+    assert not hass.config_entries.async_entries("fluvigil")
+
+
+async def test_the_new_app_offers_the_same_gauge_with_a_value_under_its_public_id(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    serve_key(aioclient_mock)
+    serve_search(aioclient_mock, answer("new_app/search_mv"))
+    serve_state(aioclient_mock, MV_PUBLIC_ID, "new_app/state_mv")
+
+    result = await run_flow(hass, MV_PUBLIC_ID)
+
+    assert result["type"] is FlowResultType.CREATE_ENTRY
+    assert result["result"].unique_id == MV_PUBLIC_ID
+
+
+async def test_a_gauge_stored_under_its_old_id_is_not_added_again_under_the_public_one(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    # Not loaded, so only the old id the search names beside the public one can tell.
+    existing = gauge_entry(hass, OLD_ID)
+    serve_key(aioclient_mock)
+    serve_search(aioclient_mock, answer("new_app/search_cologne"))
+    serve_state(aioclient_mock, PUBLIC_ID, "new_app/state_cologne")
+
+    result = await run_flow(hass, PUBLIC_ID)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "already_configured"
+    assert existing.unique_id == OLD_ID
+
+
+async def test_a_loaded_old_entry_is_recognised_by_the_public_id_its_state_names(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    # Once the service stops naming old ids in the search, the answer the loaded entry
+    # already holds is what connects the two.
+    serve_key(aioclient_mock)
+    serve_state(aioclient_mock, OLD_ID, "new_app/state_cologne")
+    serve_state(aioclient_mock, PUBLIC_ID, "new_app/state_cologne")
+    serve_search(aioclient_mock, {"stations": [{"id": PUBLIC_ID, "name": "Köln"}]})
+    await set_up(hass, gauge_entry(hass, OLD_ID))
+
+    result = await run_flow(hass, PUBLIC_ID)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "already_configured"
+
+
+async def test_an_old_id_is_recognised_as_a_gauge_stored_under_its_public_id(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker
+) -> None:
+    # The reverse direction: only the state of the picked id names the public one.
+    gauge_entry(hass, PUBLIC_ID)
+    serve_key(aioclient_mock)
+    serve_search(aioclient_mock, {"stations": [{"id": OLD_ID, "name": "Köln"}]})
+    serve_state(aioclient_mock, OLD_ID, "new_app/state_cologne")
+
+    result = await run_flow(hass, OLD_ID)
+
+    assert result["type"] is FlowResultType.ABORT
+    assert result["reason"] == "already_configured"
