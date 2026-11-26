@@ -1,0 +1,53 @@
+{
+  "stationId": "fp_4N8R2T6WBC",
+  "name": "Beispielpegel MV",
+  "water": "Warnow",
+  "sourceNotice": {
+    "id": "mv-pegelportal",
+    "form": "short-allowed",
+    "permissionBasis": "licence-and-consent",
+    "licence": {
+      "name": "CC BY-SA 3.0 DE",
+      "url": "https://creativecommons.org/licenses/by-sa/3.0/de/legalcode"
+    },
+    "sourceName": "Pegelportal Mecklenburg-Vorpommern (LUNG M-V)",
+    "sourceUrl": "https://pegelportal-mv.de/",
+    "rightsHolder": "LUNG MV, Landesamt für Umwelt, Naturschutz und Geologie Mecklenburg-Vorpommern",
+    "fetchedAt": "2027-01-02T08:20:00.000Z",
+    "stampedAt": null,
+    "stationLink": null,
+    "text": "© LUNG MV (CC BY-SA 3.0)\nDatenherkunft: Pegelportal Mecklenburg-Vorpommern (LUNG M-V) (https://pegelportal-mv.de/)\nEs handelt sich immer um ungeprüfte Rohdaten des LUNG M-V.\nKeine amtliche Warnung.",
+    "textShort": "© LUNG MV (CC BY-SA 3.0) · Pegelportal Mecklenburg-Vorpommern (LUNG M-V) · Keine amtliche Warnung.",
+    "parts": [
+      {
+        "id": "mv-pegelportal",
+        "form": "short-allowed",
+        "permissionBasis": "licence-and-consent",
+        "licence": {
+          "name": "CC BY-SA 3.0 DE",
+          "url": "https://creativecommons.org/licenses/by-sa/3.0/de/legalcode"
+        },
+        "sourceName": "Pegelportal Mecklenburg-Vorpommern (LUNG M-V)",
+        "sourceUrl": "https://pegelportal-mv.de/",
+        "rightsHolder": "LUNG MV, Landesamt für Umwelt, Naturschutz und Geologie Mecklenburg-Vorpommern",
+        "fetchedAt": "2027-01-02T08:20:00.000Z",
+        "stampedAt": null,
+        "stationLink": null,
+        "text": "© LUNG MV (CC BY-SA 3.0)\nDatenherkunft: Pegelportal Mecklenburg-Vorpommern (LUNG M-V) (https://pegelportal-mv.de/)\nEs handelt sich immer um ungeprüfte Rohdaten des LUNG M-V.\nKeine amtliche Warnung.",
+        "textShort": "© LUNG MV (CC BY-SA 3.0) · Pegelportal Mecklenburg-Vorpommern (LUNG M-V) · Keine amtliche Warnung."
+      }
+    ],
+    "sourceLine": "© LUNG MV (CC BY-SA 3.0)",
+    "rawData": "Es handelt sich immer um ungeprüfte Rohdaten des LUNG M-V.",
+    "disclaimer": null,
+    "noOfficialWarning": "Keine amtliche Warnung.",
+    "termsPath": "/terms"
+  },
+  "valueCentimeters": 118,
+  "measuredAt": "2027-01-02T08:15:00.000Z",
+  "severity": "normal",
+  "headline": "Im Bereich des Mittelwassers",
+  "lhpClass": 0,
+  "lhpClassName": "Kein Hochwasser",
+  "isFlood": false
+}

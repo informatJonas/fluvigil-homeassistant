@@ -15,5 +15,9 @@ DEFAULT_BASE_URL: Final = "https://fluvigil.de"
 # Decided in docs/home-assistant-integration-decisions.md in the service repository.
 UPDATE_INTERVAL: Final = timedelta(minutes=15)
 
+# `/state` treats a revoked key as no key and keeps answering, so the key is checked on its
+# own. Hourly: noticing a revoked key soon matters, noticing it within minutes does not.
+KEY_CHECK_INTERVAL: Final = timedelta(hours=1)
+
 # One request should never hold the coordinator hostage; the next cycle is 15 minutes away.
 REQUEST_TIMEOUT_SECONDS: Final = 30

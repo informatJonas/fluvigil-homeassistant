@@ -1,0 +1,10 @@
+{
+  "error": true,
+  "url": "https://fluvigil.de/api/v1/me",
+  "statusCode": 401,
+  "statusMessage": "Unauthorized",
+  "message": "Unauthorized",
+  "data": {
+    "code": "api_key_rejected"
+  }
+}

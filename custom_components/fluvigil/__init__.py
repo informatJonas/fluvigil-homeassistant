@@ -25,7 +25,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: FluvigilConfigEntry) -> 
     coordinator = FluvigilCoordinator(hass, entry, client, entry.data[CONF_STATION_ID])
 
     # Fail setup loudly if the first fetch does not work — an integration that loads and
-    # then shows nothing is harder to diagnose than one that refuses to load.
+    # then shows nothing is harder to diagnose than one that refuses to load. A gauge without
+    # a value is the exception: it loads, says so in the log and waits for the value.
     await coordinator.async_config_entry_first_refresh()
 
     entry.runtime_data = coordinator

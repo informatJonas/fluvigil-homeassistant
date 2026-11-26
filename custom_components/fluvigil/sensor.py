@@ -9,7 +9,7 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.const import UnitOfLength
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
@@ -52,6 +52,17 @@ class FluvigilWaterLevelSensor(CoordinatorEntity[FluvigilCoordinator], SensorEnt
             model="Pegel",
             configuration_url=f"https://fluvigil.de/stations/{station_id}",
         )
+        self._take_attribution()
+
+    @callback
+    def _handle_coordinator_update(self) -> None:
+        self._take_attribution()
+        super()._handle_coordinator_update()
+
+    def _take_attribution(self) -> None:
+        # Follows the value: a notice that no longer comes with it is removed.
+        state = self.coordinator.data
+        self._attr_attribution = state.attribution if state else None
 
     @property
     def native_value(self) -> int | None:

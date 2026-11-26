@@ -1,0 +1,15 @@
+{
+  "count": 1,
+  "stations": [
+    {
+      "id": "fp_4N8R2T6WBC",
+      "legacyId": "lhp:MV_04406.0",
+      "source": "lhp",
+      "measurementType": "river",
+      "name": "Beispielpegel MV",
+      "water": "Warnow",
+      "federalState": "DE-MV",
+      "isActive": true
+    }
+  ]
+}

@@ -24,6 +24,14 @@ class FluvigilRateLimitError(FluvigilError):
     """The hourly request budget of the account's tier is exhausted."""
 
 
+class FluvigilNoValueError(FluvigilError):
+    """The service answers, but delivers no value for this gauge.
+
+    Some providers do not licence their values for passing on, and an unknown or blocked
+    gauge looks the same.
+    """
+
+
 @dataclass(frozen=True)
 class GaugeState:
     """Current state of one gauge, as the /state endpoint reports it."""
@@ -36,6 +44,8 @@ class GaugeState:
     severity: str | None
     headline: str | None
     is_flood: bool
+    # The provider's notice, which has to be shown wherever the value is.
+    attribution: str | None = None
 
 
 @dataclass(frozen=True)
@@ -45,6 +55,8 @@ class StationSummary:
     station_id: str
     name: str
     water: str | None
+    # The older `<source>:<id>` of a gauge the service names by a public id.
+    legacy_id: str | None = None
 
     @property
     def label(self) -> str:
@@ -86,13 +98,16 @@ class FluvigilClient:
                 station_id=str(entry["id"]),
                 name=str(entry.get("name", entry["id"])),
                 water=entry.get("water"),
+                legacy_id=entry.get("legacyId"),
             )
             for entry in stations
             if isinstance(entry, dict) and "id" in entry
         ]
 
     async def async_get_state(self, station_id: str) -> GaugeState:
-        payload = await self._get(f"/api/v1/stations/{station_id}/state")
+        payload = await self._get(
+            f"/api/v1/stations/{station_id}/state", not_found=FluvigilNoValueError
+        )
 
         return GaugeState(
             station_id=str(payload.get("stationId", station_id)),
@@ -103,9 +118,15 @@ class FluvigilClient:
             severity=payload.get("severity"),
             headline=payload.get("headline"),
             is_flood=bool(payload.get("isFlood", False)),
+            attribution=_as_attribution(payload.get("sourceNotice")),
         )
 
-    async def _get(self, path: str, params: dict[str, str] | None = None) -> dict[str, Any]:
+    async def _get(
+        self,
+        path: str,
+        params: dict[str, str] | None = None,
+        not_found: type[FluvigilError] = FluvigilError,
+    ) -> dict[str, Any]:
         url = f"{self._base_url}{path}"
         headers = {"X-Api-Key": self._api_key, "Accept": "application/json"}
 
@@ -118,6 +139,9 @@ class FluvigilClient:
 
                 if response.status == 429:
                     raise FluvigilRateLimitError("Hourly request budget exhausted")
+
+                if response.status == 404:
+                    raise not_found("Fluvigil answered 404 Not Found")
 
                 response.raise_for_status()
                 payload = await response.json()
@@ -143,6 +167,26 @@ def _as_datetime(value: Any) -> datetime | None:
         return None
 
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return datetime.fromisoformat(value)
     except ValueError:
         return None
+
+
+def _as_attribution(notice: Any) -> str | None:
+    """The notice of every source involved, one per line; None rather than a made-up text."""
+    if not isinstance(notice, dict):
+        return None
+
+    parts = notice.get("parts") or [notice]
+    texts = [_notice_text(part) for part in parts if isinstance(part, dict)]
+
+    return "\n".join(text for text in texts if text) or None
+
+
+def _notice_text(part: dict[str, Any]) -> str | None:
+    # A `full-only` provider forbids shortening. A short text it may still carry is meant for
+    # pages that link the full one, which an attribution does not.
+    short = None if part.get("form") == "full-only" else part.get("textShort")
+    text = short or part.get("text")
+
+    return text if isinstance(text, str) else None

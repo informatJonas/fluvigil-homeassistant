@@ -1,0 +1,7 @@
+{
+  "error": true,
+  "url": "https://fluvigil.de/api/v1/stations/lhp:MV_04406.0/state",
+  "statusCode": 404,
+  "statusMessage": "Station not found: lhp:MV_04406.0",
+  "message": "Station not found: lhp:MV_04406.0"
+}

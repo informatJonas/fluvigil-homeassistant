@@ -1,0 +1,70 @@
+{
+  "stationId": "lhp:NI_12345",
+  "name": "Beispielpegel",
+  "water": "Aller",
+  "sourceNotice": {
+    "id": "ni-nlwkn",
+    "form": "short-allowed",
+    "permissionBasis": "licence",
+    "licence": {
+      "name": "Datenlizenz Deutschland – Namensnennung – Version 2.0",
+      "url": "https://www.govdata.de/dl-de/by-2-0"
+    },
+    "sourceName": "Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN)",
+    "sourceUrl": "https://www.pegelonline.nlwkn.niedersachsen.de",
+    "rightsHolder": "Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN)",
+    "fetchedAt": "2026-10-12T08:15:00.000Z",
+    "stampedAt": null,
+    "stationLink": null,
+    "text": "Datenherkunft: Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN) (https://www.pegelonline.nlwkn.niedersachsen.de)\nRechteinhaber: Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN)\nLizenz: Datenlizenz Deutschland – Namensnennung – Version 2.0 (https://www.govdata.de/dl-de/by-2-0)\nAbruf: 12.10.2026, 10:15 MESZ",
+    "textShort": "Datenherkunft: Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN) · Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN) · Datenlizenz Deutschland – Namensnennung – Version 2.0",
+    "parts": [
+      {
+        "id": "ni-nlwkn",
+        "form": "short-allowed",
+        "permissionBasis": "licence",
+        "licence": {
+          "name": "Datenlizenz Deutschland – Namensnennung – Version 2.0",
+          "url": "https://www.govdata.de/dl-de/by-2-0"
+        },
+        "sourceName": "Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN)",
+        "sourceUrl": "https://www.pegelonline.nlwkn.niedersachsen.de",
+        "rightsHolder": "Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN)",
+        "fetchedAt": "2026-10-12T08:15:00.000Z",
+        "stampedAt": null,
+        "stationLink": null,
+        "text": "Datenherkunft: Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN) (https://www.pegelonline.nlwkn.niedersachsen.de)\nRechteinhaber: Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN)\nLizenz: Datenlizenz Deutschland – Namensnennung – Version 2.0 (https://www.govdata.de/dl-de/by-2-0)\nAbruf: 12.10.2026, 10:15 MESZ",
+        "textShort": "Datenherkunft: Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN) · Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN) · Datenlizenz Deutschland – Namensnennung – Version 2.0"
+      },
+      {
+        "id": "lhp",
+        "form": "short-allowed",
+        "permissionBasis": "licence",
+        "licence": {
+          "name": "CC BY 4.0",
+          "url": "https://creativecommons.org/licenses/by/4.0/deed.de"
+        },
+        "sourceName": "hochwasserzentralen.de",
+        "sourceUrl": "https://www.hochwasserzentralen.de",
+        "rightsHolder": "Hochwasserzentralen der Länder",
+        "fetchedAt": null,
+        "stampedAt": "2026-10-12T08:00:00.000Z",
+        "stationLink": null,
+        "text": "Datenherkunft: hochwasserzentralen.de (https://www.hochwasserzentralen.de)\nRechteinhaber: Hochwasserzentralen der Länder\nLizenz: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/deed.de)\nStand: 12.10.2026, 10:00 MESZ",
+        "textShort": "Datenherkunft: hochwasserzentralen.de · Hochwasserzentralen der Länder · CC BY 4.0 · Stand: 12.10.2026, 10:00 MESZ"
+      }
+    ],
+    "sourceLine": "Datenherkunft: Niedersächsischer Landesbetrieb für Wasserwirtschaft, Küsten- und Naturschutz (NLWKN) (https://www.pegelonline.nlwkn.niedersachsen.de)",
+    "rawData": null,
+    "disclaimer": null,
+    "noOfficialWarning": null,
+    "termsPath": "/terms"
+  },
+  "valueCentimeters": 212,
+  "measuredAt": "2026-10-12T08:10:00.000Z",
+  "severity": "normal",
+  "headline": "Im Bereich des Mittelwassers",
+  "lhpClass": 0,
+  "lhpClassName": "Kein Hochwasser",
+  "isFlood": false
+}

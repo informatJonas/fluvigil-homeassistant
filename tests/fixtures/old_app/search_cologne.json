@@ -1,0 +1,19 @@
+{
+  "count": 1,
+  "stations": [
+    {
+      "id": "pegelonline:a6ee8177-107b-47dd-bcfd-30960ccc6e9c",
+      "source": "pegelonline",
+      "measurementType": "river",
+      "waterClass": "river",
+      "name": "Köln",
+      "water": "Rhein",
+      "slug": "koeln-rhein-2",
+      "federalState": null,
+      "latestValueCentimeters": 325,
+      "latestMeasuredAt": "2026-11-26T06:15:00.000Z",
+      "lhpClass": null,
+      "isActive": true
+    }
+  ]
+}
