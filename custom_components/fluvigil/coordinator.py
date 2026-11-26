@@ -7,7 +7,6 @@ from datetime import datetime
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
@@ -53,6 +52,7 @@ class FluvigilCoordinator(DataUpdateCoordinator[GaugeState | None]):
         self._station_id = station_id
         self._gauge_label = f"{entry.title} ({station_id})"
         self._key_checked_at: datetime | None = None
+        self._key_rejected = False
         self._has_value = True
 
     async def _async_update_data(self) -> GaugeState | None:
@@ -62,9 +62,10 @@ class FluvigilCoordinator(DataUpdateCoordinator[GaugeState | None]):
         except FluvigilNoValueError:
             state = None
         except FluvigilAuthError as error:
-            # Starts the re-authentication dialog, rather than carrying on as an anonymous
-            # caller without the user ever learning that their key is gone.
-            raise ConfigEntryAuthFailed(str(error)) from error
+            # The value itself was refused. Polling goes on, so it returns by itself if the
+            # service answers again.
+            self._ask_for_new_key()
+            raise UpdateFailed(str(error)) from error
         except FluvigilRateLimitError as error:
             raise UpdateFailed(
                 "Fluvigil rate limit reached — the account's hourly budget is used up"
@@ -87,14 +88,33 @@ class FluvigilCoordinator(DataUpdateCoordinator[GaugeState | None]):
         try:
             await self._client.async_verify_key()
         except FluvigilAuthError:
-            raise
+            self._ask_for_new_key()
         except FluvigilError as error:
-            # Only a rejection counts. A check that could not be made must not cost a
-            # reading, and is repeated with the next update.
+            # Only a rejection counts. A check that could not be made is repeated with the
+            # next update.
             _LOGGER.debug("Could not check the API key: %s", error)
             return
+        else:
+            self._key_rejected = False
 
         self._key_checked_at = now
+
+    def _ask_for_new_key(self) -> None:
+        """Open the re-authentication dialog without giving up the readings.
+
+        The values are public and stay true without a key; only the limits of the account's
+        tier are lost. An automation that depends on the level must not go blind over that.
+        """
+        if not self._key_rejected:
+            self._key_rejected = True
+            _LOGGER.warning(
+                "Fluvigil rejects the API key of gauge %s; enter a new one to restore the "
+                "limits of your tier",
+                self._gauge_label,
+            )
+
+        # Does nothing while a dialog for this entry is already open.
+        self.config_entry.async_start_reauth(self.hass)
 
     def _log_value_change(self, state: GaugeState | None) -> None:
         """Say once that a value went missing, and once that it is back."""

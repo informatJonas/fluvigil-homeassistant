@@ -17,7 +17,7 @@
       },
       "reauth_confirm": {
         "title": "Replace the API key",
-        "description": "Fluvigil no longer accepts the API key. Create a new one in your Fluvigil account under Account → API keys. It replaces the old key for every gauge that used it.",
+        "description": "Fluvigil no longer accepts the API key. The water levels keep updating without it, within the limits for anonymous access. A new key restores the limits of your tier: create it in your Fluvigil account under Account → API keys. It replaces the old key for every gauge that used it.",
         "data": { "api_key": "API key" }
       }
     },

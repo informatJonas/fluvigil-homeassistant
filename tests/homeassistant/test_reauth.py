@@ -8,6 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers import issue_registry as ir
+from pytest_homeassistant_custom_component.common import async_fire_time_changed
 from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
 from service import (
     BASE_URL,
@@ -19,6 +20,8 @@ from service import (
     serve_state,
     set_up,
 )
+
+from custom_components.fluvigil.const import UPDATE_INTERVAL
 
 NEW_KEY = "pm_fake_new_key"
 OTHER_KEY = "pm_fake_other_key"
@@ -42,8 +45,22 @@ def serve_everything(mocker: AiohttpClientMocker, key_status: int) -> None:
         serve_state(mocker, OLD_ID, "new_app/state_cologne", base_url=base_url)
         serve_state(mocker, MV_PUBLIC_ID, "new_app/state_mv", base_url=base_url)
 
+    serve_state(mocker, "fp_OTHERKEY00", "new_app/state_cologne")
+    serve_state(mocker, "fp_OTHERURL00", "new_app/state_mv", base_url=OTHER_URL)
 
-async def test_a_key_revoked_during_operation_starts_reauthentication(
+
+def sensor_values(hass: HomeAssistant) -> list[str]:
+    return [state.state for state in hass.states.async_all("sensor")]
+
+
+async def next_poll(hass: HomeAssistant, freezer: FrozenDateTimeFactory) -> None:
+    """Lets the scheduled update happen: nothing here asks for it by hand."""
+    freezer.tick(UPDATE_INTERVAL + timedelta(seconds=1))
+    async_fire_time_changed(hass)
+    await hass.async_block_till_done(wait_background_tasks=True)
+
+
+async def test_a_key_revoked_during_operation_asks_for_a_new_one_and_keeps_reporting(
     hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, freezer: FrozenDateTimeFactory
 ) -> None:
     serve_everything(aioclient_mock, key_status=200)
@@ -53,11 +70,46 @@ async def test_a_key_revoked_during_operation_starts_reauthentication(
 
     # The state route keeps answering: it treats a revoked key as no key at all.
     serve_everything(aioclient_mock, key_status=401)
-    freezer.tick(timedelta(hours=1, seconds=1))
-    await entry.runtime_data.async_refresh()
-    await hass.async_block_till_done()
+    freezer.tick(timedelta(hours=1))
+    await next_poll(hass, freezer)
 
     assert list(pending_reauth(hass)) == [entry.entry_id]
+    assert sensor_values(hass) == ["325"]
+
+    # Only the value request decides whether there is a value, and polling goes on.
+    aioclient_mock.clear_requests()
+    serve_key(aioclient_mock, status=401)
+    serve_state(aioclient_mock, OLD_ID, "new_app/state_cologne", status=500)
+    await next_poll(hass, freezer)
+
+    assert sensor_values(hass) == ["unavailable"]
+
+    serve_everything(aioclient_mock, key_status=401)
+    await next_poll(hass, freezer)
+
+    assert sensor_values(hass) == ["325"]
+    assert list(pending_reauth(hass)) == [entry.entry_id]
+
+
+async def test_a_value_request_that_refuses_the_key_costs_the_value_until_it_answers_again(
+    hass: HomeAssistant, aioclient_mock: AiohttpClientMocker, freezer: FrozenDateTimeFactory
+) -> None:
+    # Neither service generation does this today.
+    serve_everything(aioclient_mock, key_status=200)
+    entry = gauge_entry(hass)
+    await set_up(hass, entry)
+
+    aioclient_mock.clear_requests()
+    serve_state(aioclient_mock, OLD_ID, "new_app/me_rejected", status=401)
+    await next_poll(hass, freezer)
+
+    assert sensor_values(hass) == ["unavailable"]
+    assert list(pending_reauth(hass)) == [entry.entry_id]
+
+    serve_everything(aioclient_mock, key_status=200)
+    await next_poll(hass, freezer)
+
+    assert sensor_values(hass) == ["325"]
 
 
 async def test_a_failing_key_check_does_not_take_the_sensor_down(
@@ -87,6 +139,8 @@ async def test_one_dialog_replaces_the_key_of_every_gauge_that_shared_it(
     await set_up(hass, first)
     flows = pending_reauth(hass)
     assert len(flows) == 4
+    # Rejected from the start, and still every gauge reports.
+    assert sorted(sensor_values(hass)) == ["118", "118", "325", "325"]
 
     serve_everything(aioclient_mock, key_status=200)
     result = await hass.config_entries.flow.async_configure(

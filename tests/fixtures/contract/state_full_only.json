@@ -1,0 +1,47 @@
+{
+  "stationId": "at:203711",
+  "name": "Salzburg",
+  "water": "Salzach",
+  "sourceNotice": {
+    "id": "salzburg",
+    "form": "full-only",
+    "permissionBasis": "statutory-access",
+    "licence": null,
+    "sourceName": "Hydrographischer Dienst des Landes Salzburg (HYDRIS ONLINE)",
+    "sourceUrl": "https://www.salzburg.gv.at/wasser/hydro",
+    "rightsHolder": "Land Salzburg, Hydrographischer Dienst",
+    "fetchedAt": "2026-10-12T08:15:00.000Z",
+    "stampedAt": null,
+    "stationLink": null,
+    "text": "Quelle: Hydrographischer Dienst des Landes Salzburg (HYDRIS ONLINE)\nBei den über die Webanwendung bereitgestellten Daten handelt es sich um vorläufige bzw. ungeprüfte Rohdaten, die ausschließlich der raschen Information dienen. Sie können Lücken oder Fehler enthalten; insbesondere können aufgrund von Störungen der Messgeräte oder Fernübertragungseinrichtungen fehlerhafte Darstellungen nicht ausgeschlossen werden. Eine Prüfung der Daten auf Vollständigkeit und Plausibilität ist bislang nicht erfolgt.\nFür die über die Webanwendung dargestellten Rohdaten wird keine Gewähr für deren Vollständigkeit, Richtigkeit und Genauigkeit übernommen. Gewährleistungs- und Haftungsansprüche werden ausdrücklich ausgeschlossen. Die abschließende Prüfung und Kontrolle der hydrographischen Daten erfolgt durch den Hydrographischen Dienst.\nAbruf: 12.10.2026, 10:15 MESZ\nDie Darstellung ist keine amtliche Warnung.",
+    "textShort": null,
+    "parts": [
+      {
+        "id": "salzburg",
+        "form": "full-only",
+        "permissionBasis": "statutory-access",
+        "licence": null,
+        "sourceName": "Hydrographischer Dienst des Landes Salzburg (HYDRIS ONLINE)",
+        "sourceUrl": "https://www.salzburg.gv.at/wasser/hydro",
+        "rightsHolder": "Land Salzburg, Hydrographischer Dienst",
+        "fetchedAt": "2026-10-12T08:15:00.000Z",
+        "stampedAt": null,
+        "stationLink": null,
+        "text": "Quelle: Hydrographischer Dienst des Landes Salzburg (HYDRIS ONLINE)\nBei den über die Webanwendung bereitgestellten Daten handelt es sich um vorläufige bzw. ungeprüfte Rohdaten, die ausschließlich der raschen Information dienen. Sie können Lücken oder Fehler enthalten; insbesondere können aufgrund von Störungen der Messgeräte oder Fernübertragungseinrichtungen fehlerhafte Darstellungen nicht ausgeschlossen werden. Eine Prüfung der Daten auf Vollständigkeit und Plausibilität ist bislang nicht erfolgt.\nFür die über die Webanwendung dargestellten Rohdaten wird keine Gewähr für deren Vollständigkeit, Richtigkeit und Genauigkeit übernommen. Gewährleistungs- und Haftungsansprüche werden ausdrücklich ausgeschlossen. Die abschließende Prüfung und Kontrolle der hydrographischen Daten erfolgt durch den Hydrographischen Dienst.\nAbruf: 12.10.2026, 10:15 MESZ\nDie Darstellung ist keine amtliche Warnung.",
+        "textShort": null
+      }
+    ],
+    "sourceLine": "Quelle: Hydrographischer Dienst des Landes Salzburg (HYDRIS ONLINE)",
+    "rawData": "Bei den über die Webanwendung bereitgestellten Daten handelt es sich um vorläufige bzw. ungeprüfte Rohdaten, die ausschließlich der raschen Information dienen. Sie können Lücken oder Fehler enthalten; insbesondere können aufgrund von Störungen der Messgeräte oder Fernübertragungseinrichtungen fehlerhafte Darstellungen nicht ausgeschlossen werden. Eine Prüfung der Daten auf Vollständigkeit und Plausibilität ist bislang nicht erfolgt.",
+    "disclaimer": "Für die über die Webanwendung dargestellten Rohdaten wird keine Gewähr für deren Vollständigkeit, Richtigkeit und Genauigkeit übernommen. Gewährleistungs- und Haftungsansprüche werden ausdrücklich ausgeschlossen. Die abschließende Prüfung und Kontrolle der hydrographischen Daten erfolgt durch den Hydrographischen Dienst. Siehe den Haftungsausschluss der AGB.",
+    "noOfficialWarning": "Die Darstellung ist keine amtliche Warnung.",
+    "termsPath": "/terms"
+  },
+  "valueCentimeters": 143,
+  "measuredAt": "2026-10-12T08:10:00.000Z",
+  "severity": "normal",
+  "headline": "Im Bereich des Mittelwassers",
+  "lhpClass": null,
+  "lhpClassName": null,
+  "isFlood": false
+}

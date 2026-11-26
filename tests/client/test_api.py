@@ -225,3 +225,41 @@ async def test_search_keeps_the_old_id_the_service_names_beside_a_public_one(gen
     stations = await with_client(routes, lambda client: client.async_search_stations("Köln"))
 
     assert stations[0].legacy_id == legacy_id
+
+
+async def attribution_of(payload: dict) -> str | None:
+    routes = [json_route(f"/api/v1/stations/{STATION_ID}/state", payload)]
+    state = await with_client(routes, lambda client: client.async_get_state(STATION_ID))
+
+    return state.attribution
+
+
+@pytest.mark.asyncio
+async def test_every_source_of_a_value_is_named():
+    recorded = answer("contract/state_two_sources")
+    values, station = recorded["sourceNotice"]["parts"]
+
+    assert await attribution_of(recorded) == f"{values['textShort']}\n{station['textShort']}"
+
+
+@pytest.mark.asyncio
+async def test_a_notice_that_must_not_be_shortened_is_passed_on_in_full():
+    recorded = answer("contract/state_full_only")
+    full_text = recorded["sourceNotice"]["text"]
+    # Some providers of this kind do carry a short text, for pages that link their full one.
+    recorded["sourceNotice"]["parts"][0]["textShort"] = "Quelle: kurz"
+
+    assert await attribution_of(recorded) == full_text
+
+
+@pytest.mark.asyncio
+async def test_a_notice_without_a_short_text_or_parts_uses_its_text():
+    notice = {"form": "short-allowed", "text": "Datenherkunft: Beispiel", "textShort": None}
+
+    assert await attribution_of({**STATE_PAYLOAD, "sourceNotice": notice}) == notice["text"]
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("notice", [None, {}, {"parts": []}])
+async def test_without_a_notice_nothing_is_made_up(notice):
+    assert await attribution_of({**STATE_PAYLOAD, "sourceNotice": notice}) is None

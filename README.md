@@ -37,6 +37,17 @@ You get a **Water level** sensor in centimetres above the gauge datum, with the 
 time, the water body and the flood classification as attributes. Add the integration once per
 gauge.
 
+## Source notice
+
+The providers of the values attach conditions to them, such as a credit line and a licence.
+Fluvigil sends this notice with the value and the sensor carries it as its **attribution**:
+the short form where the provider allows one, otherwise the full text, and one line per source
+where several are involved. Home Assistant lists it in the sensor's **details**. Dashboard cards
+do not show it by themselves: if you display or pass on the values, for example on your own
+dashboard or website, show the notice with them.
+
+![Sensor details with the attribution](docs/screenshots/attribution.png)
+
 ## Gauges without a value
 
 Not every gauge Fluvigil lists comes with a value. Some providers do not allow their values to
@@ -49,11 +60,14 @@ exist. In the setup dialog this reads *"Fluvigil currently provides no value for
 ## Replacing the API key
 
 When Fluvigil rejects your key — revoked, expired, or because accounts were moved and old keys
-stopped being valid — Home Assistant asks you to re-authenticate. Create a new key in your
-Fluvigil account and enter it in any one of those requests: it is checked, written to **every
-gauge that used the old key** on the same server, and the remaining requests disappear. Gauges
-set up with another key or server are left alone. Entities, their ids and their history stay as
-they are.
+stopped being valid — Home Assistant asks you to re-authenticate. **The sensors keep
+reporting meanwhile**: the values are available without a key, within the limits for anonymous
+access (600 requests an hour per IP address). A new key restores the limits of your tier.
+
+Create the key in your Fluvigil account and enter it in any one of those requests: it is
+checked, written to **every gauge that used the old key** on the same server, and the
+remaining requests disappear. Gauges set up with another key or server are left alone.
+Entities, their ids and their history stay as they are.
 
 A revoked key is noticed within about an hour (immediately after a restart).
 
@@ -65,8 +79,9 @@ A revoked key is noticed within about an hour (immediately after a restart).
   last reading as if it were current — an automation would act on that.
 - **No value for the gauge:** the sensor becomes *unavailable*, the log says so once, and the
   sensor comes back on its own when a value returns.
-- **Key rejected:** the sensor becomes *unavailable* and Home Assistant asks you to
-  re-authenticate, instead of carrying on without your account unnoticed.
+- **Key rejected:** Home Assistant asks you to re-authenticate and the log says so once. The
+  sensor keeps reporting; it becomes *unavailable* only when the value itself cannot be
+  fetched.
 - **Rate limit reached:** reported as such, so you know it is your tier's budget and not an
   outage.
 

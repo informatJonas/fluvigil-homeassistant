@@ -44,6 +44,8 @@ class GaugeState:
     severity: str | None
     headline: str | None
     is_flood: bool
+    # The provider's notice, which has to be shown wherever the value is.
+    attribution: str | None = None
 
 
 @dataclass(frozen=True)
@@ -116,6 +118,7 @@ class FluvigilClient:
             severity=payload.get("severity"),
             headline=payload.get("headline"),
             is_flood=bool(payload.get("isFlood", False)),
+            attribution=_as_attribution(payload.get("sourceNotice")),
         )
 
     async def _get(
@@ -167,3 +170,23 @@ def _as_datetime(value: Any) -> datetime | None:
         return datetime.fromisoformat(value)
     except ValueError:
         return None
+
+
+def _as_attribution(notice: Any) -> str | None:
+    """The notice of every source involved, one per line; None rather than a made-up text."""
+    if not isinstance(notice, dict):
+        return None
+
+    parts = notice.get("parts") or [notice]
+    texts = [_notice_text(part) for part in parts if isinstance(part, dict)]
+
+    return "\n".join(text for text in texts if text) or None
+
+
+def _notice_text(part: dict[str, Any]) -> str | None:
+    # A `full-only` provider forbids shortening. A short text it may still carry is meant for
+    # pages that link the full one, which an attribution does not.
+    short = None if part.get("form") == "full-only" else part.get("textShort")
+    text = short or part.get("text")
+
+    return text if isinstance(text, str) else None

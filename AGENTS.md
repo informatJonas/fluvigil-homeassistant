@@ -23,7 +23,10 @@ sources into one dataset. Two endpoints matter here:
   anonymously on free-tier limits, which is exactly how a typo becomes invisible.
 - `GET /api/v1/stations/{id}/state` — compact: value, measurement time, severity, headline.
   `404` means the service delivers nothing for this gauge. It never answers `401` for a revoked
-  key, which is why the coordinator asks `/me` as well (at start, then hourly).
+  key, which is why the coordinator asks `/me` as well (at start, then hourly). A rejected key
+  starts re-authentication and the values keep running: they stay true without a key.
+  `sourceNotice` is a licence condition and has to reach the user with the value (the sensor's
+  attribution); a `full-only` notice is never shortened.
 
 Answer shapes of the running and the next service generation are kept in `tests/fixtures`.
 

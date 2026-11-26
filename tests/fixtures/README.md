@@ -9,5 +9,7 @@ Two generations of the Fluvigil API answer this integration.
   have a public id (`fp_` and ten Crockford Base32 characters), the stored `<source>:<id>` stays a permanent alias in
   requests, the state answer names the gauge by the public id, the list adds `legacyId` during a transition, and
   gauges of Mecklenburg-Western Pomerania deliver a value. Ids, names and values of the MV gauge are invented.
+- `contract/`: two examples from the published API contract, for the source notice: a gauge with two sources, and a
+  provider whose notice must never be shortened (`form: full-only`).
 
 Neither generation answers `401` on `/state` for a revoked key: the request is served as anonymous. Only `/me` rejects it.

@@ -9,7 +9,9 @@ All notable changes to this integration are listed here. The format follows
 ### Added
 
 - Re-authentication: a rejected API key can be replaced in Home Assistant. One dialog updates
-  every gauge that used the old key on the same server and closes the other requests.
+  every gauge that used the old key on the same server and closes the other requests. The
+  sensors keep reporting while the request is open; a new key restores the limits of the tier.
+- The source notice of each value is shown as the attribution of its sensor.
 - A gauge Fluvigil has no value for is named as such in the setup dialog instead of being
   added.
 
@@ -23,7 +25,7 @@ All notable changes to this integration are listed here. The format follows
 ### Fixed
 
 - A revoked API key went unnoticed: the value request treats it as no key at all. The key is
-  now checked at start and once an hour.
+  now checked at start and once an hour, at the cost of one request per gauge and hour.
 - A rate limit hit while searching for a gauge is reported as such.
 
 ## [0.1.1] - 2026-09-10

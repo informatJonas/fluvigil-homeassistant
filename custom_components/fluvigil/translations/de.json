@@ -17,7 +17,7 @@
       },
       "reauth_confirm": {
         "title": "API-Key ersetzen",
-        "description": "Fluvigil akzeptiert den API-Key nicht mehr. Lege im Fluvigil-Konto unter Konto → API-Keys einen neuen an. Er ersetzt den alten bei allen Pegeln, die ihn verwendet haben.",
+        "description": "Fluvigil akzeptiert den API-Key nicht mehr. Die Pegelwerte laufen auch ohne ihn weiter, innerhalb der Grenzen für Zugriffe ohne Anmeldung. Ein neuer Key stellt die Grenzen deines Tarifs wieder her: Lege ihn im Fluvigil-Konto unter Konto → API-Keys an. Er ersetzt den alten bei allen Pegeln, die ihn verwendet haben.",
         "data": { "api_key": "API-Key" }
       }
     },
