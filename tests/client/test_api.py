@@ -6,6 +6,7 @@ fails — and a stub that reimplements those semantics can agree with the client
 are wrong.
 """
 
+import asyncio
 import sys
 import types
 from pathlib import Path
@@ -122,6 +123,21 @@ async def test_unreachable_service_raises_a_plain_error():
 
         with pytest.raises(FluvigilError):
             await client.async_verify_key()
+
+
+@pytest.mark.asyncio
+async def test_a_service_that_does_not_answer_is_a_plain_failure(monkeypatch):
+    monkeypatch.setattr("fluvigil.api.REQUEST_TIMEOUT_SECONDS", 0.05)
+
+    async def never_in_time(_request: web.Request) -> web.Response:
+        await asyncio.sleep(0.5)
+
+        return web.json_response({"tier": "free"})
+
+    with pytest.raises(FluvigilError, match="did not answer in time"):
+        await with_client(
+            [web.get("/api/v1/me", never_in_time)], lambda client: client.async_verify_key()
+        )
 
 
 @pytest.mark.asyncio

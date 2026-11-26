@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
+import asyncio
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Any
 
 import aiohttp
-import async_timeout
 
 from .const import REQUEST_TIMEOUT_SECONDS
 
@@ -131,7 +131,7 @@ class FluvigilClient:
         headers = {"X-Api-Key": self._api_key, "Accept": "application/json"}
 
         try:
-            async with async_timeout.timeout(REQUEST_TIMEOUT_SECONDS):
+            async with asyncio.timeout(REQUEST_TIMEOUT_SECONDS):
                 response = await self._session.get(url, headers=headers, params=params)
 
                 if response.status in (401, 403):
