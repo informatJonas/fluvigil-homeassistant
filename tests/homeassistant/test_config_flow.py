@@ -9,7 +9,7 @@ time the gauge was actually read.
 from answers import answer
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
-from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
+from pytest_homeassistant.test_util.aiohttp import AiohttpClientMocker
 from service import (
     BASE_URL,
     MV_OLD_ID,

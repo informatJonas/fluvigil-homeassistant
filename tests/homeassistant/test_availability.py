@@ -4,7 +4,7 @@ import logging
 
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
-from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
+from pytest_homeassistant.test_util.aiohttp import AiohttpClientMocker
 from service import MV_OLD_ID, gauge_entry, serve_key, serve_state, set_up
 
 

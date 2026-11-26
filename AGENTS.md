@@ -43,7 +43,10 @@ or the limits; the numbers there are argued, not assumed.
   grow with the number of gauges a user adds.
 - **`api.py` and `const.py` import nothing from Home Assistant.** That separation is what
   makes the network-facing half testable without installing the framework, and the tests
-  rely on it (`tests/conftest.py` registers the package by hand so `__init__.py` never runs).
+  rely on it (`tests/client/test_api.py` registers the package by hand so `__init__.py`
+  never runs).
+- **No third-party import without a `requirements` entry in the manifest.** A package that
+  happens to be installed beside Home Assistant may be missing on the next installation.
 - **Tests run against a real aiohttp server**, not a mocking library: the client's whole job
   is reacting to what HTTP returns, and a stub that reimplements those semantics can agree
   with the client while both are wrong.
@@ -54,9 +57,12 @@ or the limits; the numbers there are argued, not assumed.
 
 ```bash
 python3 -m venv .venv
-.venv/bin/pip install aiohttp async_timeout pytest pytest-asyncio pytest-homeassistant-custom-component
+.venv/bin/pip install pytest-homeassistant==2026.11.3
 ./run-tests.sh
 ```
+
+The release of `pytest-homeassistant` is the Home Assistant version it tests against; upgrade
+them together. It is the package Home Assistant publishes itself and exists from 2026.11 on.
 
 **Two runs, and that is not an accident.** The Home Assistant test plugin blocks sockets and
 enforces its own cleanup across everything in its process, while `tests/client` exists

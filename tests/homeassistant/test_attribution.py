@@ -3,7 +3,7 @@
 import pytest
 from answers import answer
 from homeassistant.core import HomeAssistant
-from pytest_homeassistant_custom_component.test_util.aiohttp import AiohttpClientMocker
+from pytest_homeassistant.test_util.aiohttp import AiohttpClientMocker
 from service import MV_PUBLIC_ID, OLD_ID, gauge_entry, serve_key, set_up
 
 
