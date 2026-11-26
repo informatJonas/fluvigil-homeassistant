@@ -4,7 +4,27 @@ All notable changes to this integration are listed here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), the versions follow
 [Semantic Versioning](https://semver.org/).
 
-## [0.2.0]
+## [0.2.1] - 2026-11-26
+
+### Added
+
+- Icon of the integration, shipped with it and shown by Home Assistant 2026.3 and newer.
+- Category and country information for the Home Assistant Marketplace.
+- The repository is checked by hassfest and the HACS validation.
+
+### Changed
+
+- The installation guide covers the Marketplace of Home Assistant 2026.11 and HACS for older
+  versions.
+
+### Fixed
+
+- The integration failed to load on installations without the `async_timeout` package,
+  which Home Assistant no longer brings along by itself. It now uses the standard library.
+- The description promised groundwater levels, reservoir storage and forecasts, which the
+  integration does not offer, and called every value a height above the gauge datum.
+
+## [0.2.0] - 2026-11-26
 
 ### Added
 
