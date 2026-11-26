@@ -65,6 +65,8 @@ Marketplace takes it over and there is nothing to add again.
 You get a **Water level** sensor in centimetres, with the measurement time, the water body
 and the flood classification as attributes. Add the integration once per gauge.
 
+![The integration page in Home Assistant with one gauge](docs/screenshots/integration-page.png)
+
 The value counts from the reference level the provider uses. That is often the zero point of
 the gauge, but some providers report a height above sea level (Swiss gauges, for example),
 so choose the thresholds of your automations from the readings of that particular gauge.
